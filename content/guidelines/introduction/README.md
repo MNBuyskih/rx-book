@@ -18,44 +18,44 @@ Please contact us through the [RxJS Issues](https://github.com/Reactive-Extensio
 
 {% else %}
 
-## The introduction to Reactive Programming you've been missing
+## Введение в Реактивное Программирование которое вы пропустили
 (by [@andrestaltz](https://twitter.com/andrestaltz))
 
-So you're curious in learning this new thing called Reactive Programming, particularly its variant comprising of Rx, Bacon.js, RAC, and others.
+Значит тебе интересно изучение чего-то нового, что называют Реактивным Программированем. В частности таких библиотек как Rx, Bacon.js, RAC, и других.
 
-Learning it is hard, even harder by the lack of good material. When I started, I tried looking for tutorials. I found only a handful of practical guides, but they just scratched the surface and never tackled the challenge of building the whole architecture around it. Library documentations often don't help when you're trying to understand some function. I mean, honestly, look at this:
+Учиться трудно, еще труднее из-за отсутствия хорошего материала. Когда я начинал, я пытался искать учебники. Я нашел только несколько практических руководств, но они слишком поверхностны и никогда не решают проблему построения всей архитектуры. Документации часто не досточно, когда вы пытаетесь изучить какую-то функцию. Вот что я имею в виду:
 
 > **Rx.Observable.prototype.flatMapLatest(selector, [thisArg])**
 
-> Projects each element of an observable sequence into a new sequence of observable sequences by incorporating the element's index and then transforms an observable sequence of observable sequences into an observable sequence producing values only from the most recent observable sequence.
+> Проецирует каждый элемент наблюдаемой последовательности в новую последовательность наблюдаемых последовательностей путем включения индекса элемента, а затем преобразует наблюдаемую последовательность наблюдаемых последовательностей в наблюдаемую последовательность возвращающую значения только из последней наблюдаемой последовательности.
 
-Holy cow.
+Святая корова.
 
-I've read two books, one just painted the big picture, while the other dived into how to use the Reactive library. I ended up learning Reactive Programming the hard way: figuring it out while building with it. At my work in [Futurice](https://www.futurice.com) I got to use it in a real project, and had the [support of some colleagues](http://blog.futurice.com/top-7-tips-for-rxjava-on-android) when I ran into troubles.
+Я читал две книги, первая просто обрисовала картину, в то время как другая погружала в использование библиотеки Reactive. Я закончил обучение Реактивному Програмированию трудным путём: мне пришлось разобраться с ним при непосредственной разработке на нём. В своей работе [Futurice](https://www.futurice.com) я использовал его в реальном проекте, и [в этом мне помогли колеги](http://blog.futurice.com/top-7-tips-for-rxjava-on-android) когда у меня возникали трудности.
 
-The hardest part of the learning journey is **thinking in Reactive**. It's a lot about letting go of old imperative and stateful habits of typical programming, and forcing your brain to work in a different paradigm. I haven't found any guide on the internet in this aspect, and I think the world deserves a practical tutorial on how to think in Reactive, so that you can get started. Library documentation can light your way after that. I hope this helps you.
+Самая трудная часть обучения - это **мыслить Реактивно**. Проблема в том, чтобы забыть старый императив и устоявшиеся привычки типичного программирования, и заставить свой мозг работать в другой парадигме. Я не нашел ни одного путеводителя в интернете в этом аспекте, и я думаю, что мир заслуживает практическое руководство о том, как мыслить Реактивно, так что вы можете начать. Документация будет даваться вам гораздо проще. Я надеюсь, это поможет вам.
 
-## "What is Reactive Programming?"
+## "Что такое Реактивное Программирование?"
 
-There are plenty of bad explanations and definitions out there on the internet. [Wikipedia](https://en.wikipedia.org/wiki/Reactive_programming) is too generic and theoretical as usual. [Stackoverflow](http://stackoverflow.com/questions/1028250/what-is-functional-reactive-programming)'s canonical answer is obviously not suitable for newcomers. [Reactive Manifesto](http://www.reactivemanifesto.org/) sounds like the kind of thing you show to your project manager or the businessmen at your company. Microsoft's [Rx terminology](https://rx.codeplex.com/) "Rx = Observables + LINQ + Schedulers" is so heavy and Microsoftish that most of us are left confused. Terms like "reactive" and "propagation of change" don't convey anything specifically different to what your typical MV* and favorite language already does. Of course my framework views react to the models. Of course change is propagated. If it wouldn't, nothing would be rendered.
+Есть много плохих объяснений и определений из интернета. Статья в [Википедии](https://en.wikipedia.org/wiki/Reactive_programming) как обычно является слишком обобщенной и теоретической. Канонической ответ на [StackOverflow](http://stackoverflow.com/questions/1028250/what-is-functional-reactive-programming) явно не подходит для новичков. [Reactive Manifesto](http://www.reactivemanifesto.org/) больше подходит для того чтобы показать своему руководителю проекта или бизнесменам в вашей компании. [RX терминология](https://rx.codeplex.com/) от Microsoft  "Rx = Observables + LINQ + Schedulers" является настолько тяжелым и микрософтным, что большинство из нас приводит в замешательство. Такие термины, как "реактивный" и "распространение изменений" не говорят чем же конкретно отличается Реактивное Программирование от того, что ваш любимый MV* и язык уже умеет. Конечно, мой шаблонизатор реагирует на изменение модели. Конечно, изменение публикуются. Если этого не будет, ничего не будет отрендерено.
 
-So let's cut the bullshit. 
+Так давай покончим с этим дерьмом.
 
-#### Reactive programming is programming with asynchronous data streams. 
+#### Реактивное программирование - это программирование с асинхронными потоками данных. 
 
-In a way, this isn't anything new. Event buses or your typical click events are really an asynchronous event stream, on which you can observe and do some side effects. Reactive is that idea on steroids. You are able to create data streams of anything, not just from click and hover events. Streams are cheap and ubiquitous, anything can be a stream: variables, user inputs, properties, caches, data structures, etc. For example, imagine your Twitter feed would be a data stream in the same fashion that click events are. You can listen to that stream and react accordingly.
+Таким образом, это не что-то новое. События или обычные клики мышью тоже асинхронный поток событий, на который Вы можете подписаться и выполнять некоторые побочные действия. Реактивный - это эта идея на стероидах. Вы можете создать потоки данных не только от событий клика или наведения. Потоки частое и распростаненное явление, все может быть потоком: переменные, данные введенные пользователем, параметры, свойства, кеш, структуры данных и т. д. Например, представьте, что ваша лента в Твиттере будет потоком данных, так же как и событие клика. Вы можете слушать этот поток и соответственно реагировать.
 
-**On top of that, you are given an amazing toolbox of functions to combine, create and filter any of those streams.** That's where the "functional" magic kicks in. A stream can be used as an input to another one. Even multiple streams can be used as inputs to another stream. You can _merge_ two streams. You can _filter_ a stream to get another one that has only those events you are interested in. You can _map_ data values from one stream to another new one.
+**Кроме того, Вам дается удивительный набор функций комбинировать, создавать и фильтровать любым из этих потоков.** Вот где "функциональной" магия помогает. Поток может быть использован в качестве входных данных для другого потока. Даже многократные потоки могут использоваться в качестве входных данных в другой поток. Вы можете выполнить слияние (_merge_) двух потоков. Вы можете отфильтровать (_filter_) поток, чтобы получить еще один, который имеет только те события, которые Вас интересуют. Вы можете перенаправить (_map_) значения данных из одного потока в другой.
 
-If streams are so central to Reactive, let's take a careful look at them, starting with our familiar "clicks on a button" event stream.
+Если потоки имеют решающее значение для Реактивного Программирования, давайте внимательно посмотрим на него, на примере знакомого нам потока событиый "клика по кнопке".
 
-![Click event stream](http://i.imgur.com/cL4MOsS.png)
+![Поток событий кликов](http://i.imgur.com/cL4MOsS.png)
 
-A stream is a sequence of **ongoing events ordered in time**. It can emit three different things: a value (of some type), an error, or a "completed" signal. Consider that the "completed" takes place, for instance, when the current window or view containing that button is closed.
+Поток - это последовательность **текущих событий упорядоченых по времени**. Он может возвращать три разные вещи: значения (определенного типа), ошибку, или  сигнал "завершения". Считается, что "завершено" происходит, например, когда текущее окно или вид, содержащие эту кнопку, закрываются.
 
-We capture these emitted events only **asynchronously**, by defining a function that will execute when a value is emitted, another function when an error is emitted, and another function when 'completed' is emitted. Sometimes these last two can be omitted and you can just focus on defining the function for values. The "listening" to the stream is called **subscribing**. The functions we are defining are observers. The stream is the subject (or "observable") being observed. This is precisely the [Observer Design Pattern](https://en.wikipedia.org/wiki/Observer_pattern).
+Мы фиксируем эти опубликованные события только **асинхронно**, определив функцию, которая будет выполняться, когда значение опубликовано, другая функция когда генерируется ошибка, и еще одна функция для "завершено". Иногда последние две могут быть пропущены, и вы можете сосредоточиться на определении функции для значений. "Прослушивание" потока называется **subscribing**. Функции, которые мы определяем - наблюдатели. Поток, который прослушивается, является объектом (или "наблюдаемым"). Такая модель поведения называется [Observer Design Pattern](https://en.wikipedia.org/wiki/Observer_pattern).
 
-An alternative way of drawing that diagram is with ASCII, which we will use in some parts of this tutorial:
+Альтернативный способ рисования схемы на ASCII, который мы будем использовать в некоторых частях этого учебника:
 ```
 --a---b-c---d---X---|->
 
@@ -65,9 +65,9 @@ X is an error
 ---> is the timeline
 ```
 
-Since this feels so familiar already, and I don't want you to get bored, let's do something new: we are going to create new click event streams transformed out of the original click event stream.
+Теперь когда мы познакомились с этим, и я не хочу, чтобы вы заскучали, давайте сделаем что-то новое: мы создадим новые потоки событий преобразованые из обычного потока событий кликов.
 
-First, let's make a counter stream that indicates how many times a button was clicked. In common Reactive libraries, each stream has many functions attached to it, such as `map`, `filter`, `scan`, etc. When you call one of these functions, such as `clickStream.map(f)`, it returns a **new stream** based on the click stream. It does not modify the original click stream in any way. This is a property called **immutability**, and it goes together with Reactive streams just like pancakes are good with syrup. That allows us to chain functions like `clickStream.map(f).scan(g)`:
+Во-первых, давайте сделаем встречный поток, который показывает, сколько раз была нажата кнопка. В общей реактивной библиотеке, каждый поток имеет много функций, прикрепленных к нему, такие как `map`, `filter`, `scan`, и т.д. Когда вы вызываете одну из этих функций, например, о `clickStream.map(f)`, она возвращает **новый поток** основанный на потоке событий клика. Она не изменяет исходный поток событий. Это свойство называется **неизменность**, и оно идет вместе с реактивными потоками так же хорошо, как блины с сиропом. Что позволяет объединять функции в цепочки, такие как `clickStream.map(f).scan(g)`:
 
 ```
   clickStream: ---c----c--c----c------c-->
@@ -77,18 +77,18 @@ First, let's make a counter stream that indicates how many times a button was cl
 counterStream: ---1----2--3----4------5-->
 ```
 
-The `map(f)` function replaces (into the new stream) each emitted value according to a function `f` you provide. In our case, we mapped to the number 1 on each click. The `scan(g)` function aggregates all previous values on the stream, producing value `x = g(accumulated, current)`, where `g` was simply the add function in this example. Then, `counterStream` emits the total number of clicks whenever a click happens.
+Функция `map(f)` заменяет (в новом потоке) каждое опубликованное значение согласно функции `f`, описанной вами. В нашем случае, мы передаем цыфру 1 на каждый клик. Функция `scan(g)` агрегирует все предыдущие значения в поток, вычисляя значения `x = g(accumulated, current)`, где `g` является функцией сложения в этом примере. Затем, `counterStream` выдает общее количество кликов каждый раз, когда происходит клик.
 
-To show the real power of Reactive, let's just say that you want to have a stream of "double click" events. To make it even more interesting, let's say we want the new stream to consider triple clicks as double clicks, or in general, multiple clicks (two or more). Take a deep breath and imagine how you would do that in a traditional imperative and stateful fashion. I bet it sounds fairly nasty and involves some variables to keep state and some fiddling with time intervals.
+Чтобы показать настоящую мощь Реактивного программирования, давайте предположим, что вы хотите иметь поток событий "двойных кликов". Чтобы стало еще интересней, предположим, мы хотим, чтобы новый поток, рассматривал тройной щелчок как двойной, или вообще, как несколько кликов (два или более). Сделайте глубокий вдох и представьте, как бы вы сделать это в традиционном императивном виде. Бьюсь об заклад, это выглядеть будет это довольно мерзко и будет в изобилии содеражть переменные для хранения состояния, и некоторых махинаций с интервалами времени.
 
-Well, in Reactive it's pretty simple. In fact, the logic is just [4 lines of code](http://jsfiddle.net/staltz/4gGgs/27/).
-But let's ignore code for now. Thinking in diagrams is the best way to understand and build streams, whether you're a beginner or an expert.
+Ну, в Реактивном Программировании это довольно просто. По сути, вся логика умещается в [4 строки кода](http://jsfiddle.net/staltz/4gGgs/27/).
+Но давайте пока проигнорируем код. Размышление над диаграммами лучший способ, чтобы понять и построить потоки, не важно новичк вы или эксперт.
 
-![Multiple clicks stream](http://i.imgur.com/HMGWNO5.png)
+![Поток множества кликов](http://i.imgur.com/HMGWNO5.png)
 
-Grey boxes are functions transforming one stream into another. First we accumulate clicks in lists, whenever 250 milliseconds of "event silence" has happened (that's what `buffer(stream.throttle(250ms))` does, in a nutshell. Don't worry about understanding the details at this point, we are just demoing Reactive for now). The result is a stream of lists, from which we apply `map()` to map each list to an integer matching the length of that list. Finally, we ignore `1` integers using the `filter(x >= 2)` function. That's it: 3 operations to produce our intended stream. We can then subscribe ("listen") to it to react accordingly how we wish.
+Серые прямоугольники - это функции, преобразующие одик поток в другой. Сначала мы накапливаем клики в списки, всякий раз когда происходит 250-миллисекундная "задержка мажду событиями" (это происходит в строке `buffer(stream.throttle(250ms))`. Не волнуйтесь о понимании деталей в этом месте, сейчас мы просто демострируем Реактивное Программирование). Результатом является поток списков, к каждому из которых мы применяем `map()` для преобразования каждого списка в целое число, соответствующеее длине этого списка. Наконец, мы проигнорируем числа `1` с помощью функции `filter(x >= 2)`. То есть: 3 операции производят намеченный поток. Затем можно подписаться ("прослушивать") на него и реагировать как нам угодно.
 
-I hope you enjoy the beauty of this approach. This example is just the tip of the iceberg: you can apply the same operations on different kinds of streams, for instance, on a stream of API responses; on the other hand, there are many other functions available.
+Я надеюсь, что вы оценили красоту этого подхода. Этот пример только верхушка айсберга: вы можете применять те же операции для разных видов потоков, например, поток ответов API; с другой стороны, есть много других функций.
 
 ## "Why should I consider adopting RP?"
 
